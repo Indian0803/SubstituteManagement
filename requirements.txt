@@ -6,7 +6,6 @@ Django==4.0.6
 django-multiselectfield==0.1.12
 django-widget-tweaks==1.4.12
 mysqlclient==2.1.1
-psycopg2 @ file:///C:/ci/psycopg2_1594305172475/work
 pycodestyle==2.8.0
 pytz==2020.1
 sqlparse @ file:///tmp/build/80754af9/sqlparse_1602184451250/work
