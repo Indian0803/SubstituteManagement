@@ -1,0 +1,74 @@
+{% extends "./base.html" %}
+
+
+{% load widget_tweaks %}
+{% load static %}
+{% load substitute_extras %}
+
+{% block head %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="columns is-mobile">
+	<div class="column is-half-tablet is-offset-one-quarter-tablet is-10-mobile is-offset-1-mobile is-half-desktop is-offset-one-quarter-desktop">
+		<div class="card">
+			<div class="card-content" style="margin-top:100px;">
+				<form method="post" enctype="multipart/form-data" action="" role="form">
+					{% csrf_token %}
+					<h3 class="title is-3">Choose Periods For {{day}}</h3>
+          <hr>
+					<h5 class="title is-5">Select the periods that you will miss:</h5>
+					<div class="control">
+						{% for checkbox in form.period %}
+							<span class="period" id="{{forloop.counter}}">
+								{{ checkbox.tag }}
+								<label class="period" id="{{forloop.counter}}" for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+								<br>
+							</span>
+						{% endfor %}
+					</div>
+					<hr>
+					<h5 class="title is-5">Add any notes or messages you want to send to the substitute teacher:</h5>
+					{{ formset.management_form }}
+					{% for field in formset %}
+					<div class="is-hidden message" id="{{forloop.counter}}">
+						<label class="name" id="{{forloop.counter}}">Message for: {{ lesson_list|return_item:forloop.counter }}</label>
+						{{ field.message|add_class:"input"}}
+					</div>
+					{% endfor %}
+
+					<div class="field">
+						<p class="control">
+							<button type="submit" class="button is-success">
+								Next
+							</button>
+						</p>
+					</div>
+          {% if messages %}
+						{% for message in messages %}
+							<article class="message is-danger">
+								<div class="message-body">
+									{{message}}
+								</div>
+							</article>
+						{% endfor %}
+					{% endif %}
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script type='text/javascript'>
+	$('.period').on('click', function () {
+		var id = $(this).attr('id');
+		if ($('#'+ id + '.message').hasClass('is-hidden')) {
+			$('#'+ id + '.message').removeClass('is-hidden');
+		}
+		else {
+			$('#'+ id + '.message').addClass('is-hidden');
+		}
+	})
+</script>
+{% endblock %}

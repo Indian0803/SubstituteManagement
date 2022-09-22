@@ -1,0 +1,54 @@
+{% extends "./base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head %}
+    <title>Login</title>
+{% endblock %}
+{% block content %}
+<section class="hero is-fullheight">
+    <div class="hero-body">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-5-tablet is-5-desktop is-4-widescreen">
+            <form method="POST" class="box has-background-white-ter">
+              {% csrf_token %}
+              <div class="field">
+                <label for="" class="label">Email address</label>
+                <div class="control has-icons-left">
+                  {{ form.email|add_class:"input" }}
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-envelope"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label">Password</label>
+                <div class="control has-icons-left">
+                  {{ form.password|add_class:"input" }}
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                </div>
+              </div>
+              {% if messages %}
+                {% for message in messages %}
+                  <article class="message is-danger">
+                    <div class="message-body">
+                      {{message}}
+                    </div>
+                  </article>
+                {% endfor %}
+              {% endif %}
+              <div class="field">
+                <button type="submit" class="button is-success">
+                  Login
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

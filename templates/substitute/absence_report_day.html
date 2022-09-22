@@ -1,0 +1,42 @@
+{% extends "./base.html" %}
+
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block content %}
+<div class="columns is-mobile">
+	<div class="column is-half-tablet is-offset-one-quarter-tablet is-10-mobile is-offset-1-mobile is-half-desktop is-offset-one-quarter-desktop">
+		<div class="card">
+			<div class="card-content" style="margin-top:100px;">
+				<form method="post" enctype="multipart/form-data" action="" role="form">
+					{% csrf_token %}
+					<h3 class="title is-3">Choose Day</h3>
+					<div class="field">
+						<div class="file is-boxed is-primary">
+							{{ form.day|add_class:"control select"}}
+						</div>
+					</div>
+					{% if messages %}
+						{% for message in messages %}
+							<article class="message is-danger">
+								<div class="message-body">
+									{{message}}
+								</div>
+							</article>
+						{% endfor %}
+					{% endif %}
+					<div class="field">
+						<p class="control">
+							<button type="submit" class="button is-success">
+								Next
+							</button>
+						</p>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
