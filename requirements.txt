@@ -8,7 +8,6 @@ django-widget-tweaks==1.4.12
 mysqlclient==2.1.1
 pycodestyle==2.8.0
 pytz==2020.1
-sqlparse @ file:///tmp/build/80754af9/sqlparse_1602184451250/work
 toml==0.10.2
 tzdata==2022.2
 Unidecode==1.3.4
