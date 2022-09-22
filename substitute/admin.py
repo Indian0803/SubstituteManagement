@@ -14,7 +14,7 @@ import unidecode
 
 
 class CsvImportForm(forms.Form):
-    csv_upload = forms.FileField()
+    csv_upload = forms.FileField(label="Submit a csv file")
 
 
 class UserAdmin(BaseUserAdmin):
