@@ -130,16 +130,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
-SENDGRID_API_KEY = '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'
-
-EMAIL_HOST = 'api.sendgrid.net'
-EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
-EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 

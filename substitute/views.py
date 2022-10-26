@@ -2,10 +2,12 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-
-from django.core.mail import send_mail
 from .models import *
 from .forms import *
+
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
 
 
 def loginPage(request):
@@ -187,7 +189,17 @@ def absence_report_period(request):
 
                 # fixxxxxxxxxxxxxxxxxx
                 # finding teacher based on class/department and whether they're absent
-                send_mail('Substitute Request', 'Test', 'rkawamura0483@gmail.com', ['14086@stmaur.ac.jp'], fail_silently=False)
+
+                sg = sendgrid.SendGridAPIClient(
+                    api_key='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')
+                from_email = Email("14086@stmaur.ac.jp")
+                to_email = To("rkawamura0483@gmail.com")
+                subject = "Sending with SendGrid is Fun"
+                content = Content(
+                    "text/plain", "and easy to do anywhere, even with Python")
+                mail = Mail(from_email, to_email, subject, content)
+                response = sg.client.mail.send.post(request_body=mail.get())
+
             return redirect("teacher_home")
 
     form = AbsenceForm(lessons)
