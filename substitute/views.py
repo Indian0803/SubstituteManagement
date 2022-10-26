@@ -190,10 +190,11 @@ def absence_report_period(request):
                 # finding teacher based on class/department and whether they're absent
 
                 send_mail(
-                    'Subject here',
-                    'Here is the message.',
+                    'Substitute Request',
+                    'Teacher: ' + teacher.first_name + teacher.last_name +
+                    "\nDay: "+day+"\nPeriod: "+lesson+"\nMessage: "+message,
                     'rkawamura0483@gmail.com',
-                    ['14086@stmaur.ac.jp'],
+                    ['Indiankawamura@gmail.com'],
                     fail_silently=False,
                 )
 
