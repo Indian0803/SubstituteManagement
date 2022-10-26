@@ -22,7 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+# SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = '0xor(m*rqs^ic*j#2u&#ko_4056uoqt*+gcrz-)^t$69br6isj'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -129,7 +131,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+# SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+SENDGRID_API_KEY = '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'
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
