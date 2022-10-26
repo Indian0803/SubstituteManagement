@@ -192,8 +192,8 @@ def absence_report_period(request):
                 send_mail(
                     'Subject here',
                     'Here is the message.',
-                    '14086@stmaur.ac.jp',
-                    ['rkawamura0483@gmail.com'],
+                    'rkawamura0483@gmail.com',
+                    ['14086@stmaur.ac.jp'],
                     fail_silently=False,
                 )
 
