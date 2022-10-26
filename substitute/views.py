@@ -65,7 +65,7 @@ def absence_report_day(request):
                                  "The inputted day is not in this year's academic calendar")
                 return HttpResponseRedirect(request.path_info)
             elif day.weekday() == 5 or day.weekday() == 6:
-                rmessages.warning(request, "The inputted day is a holiday.")
+                messages.warning(request, "The inputted day is a holiday.")
                 return HttpResponseRedirect(request.path_info)
 
             holidays = Holiday.objects.filter(type="Holiday")
