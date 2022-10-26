@@ -187,7 +187,6 @@ def absence_report_period(request):
 
                 # fixxxxxxxxxxxxxxxxxx
                 # finding teacher based on class/department and whether they're absent
-                print("send")
                 send_mail('Substitute Request', 'Test', 'rkawamura0483@gmail.com', ['14086@stmaur.ac.jp'], fail_silently=False)
             return redirect("teacher_home")
 
