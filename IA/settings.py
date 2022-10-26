@@ -81,30 +81,30 @@ WSGI_APPLICATION = 'IA.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-if DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'IA',
-            'USER': 'postgres',
-            'PASSWORD': '0803Kawa',
-            'HOST': 'localhost',
-            'PORT': 5432,
-        }
+# if DEBUG:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': 'IA',
+#             'USER': 'postgres',
+#             'PASSWORD': '0803Kawa',
+#             'HOST': 'localhost',
+#             'PORT': 5432,
+#         }
+#     }
+# else:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'saintmaur$db',
+        'USER': 'saintmaur',
+        'PASSWORD': 'stmaur1872',
+        'HOST': 'saintmaur.mysql.pythonanywhere-services.com',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'saintmaur$db',
-            'USER': 'saintmaur',
-            'PASSWORD': 'stmaur1872',
-            'HOST': 'saintmaur.mysql.pythonanywhere-services.com',
-            'OPTIONS': {
-                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-            },
-        }
-    }
+}
 
 
 AUTH_USER_MODEL = 'substitute.User'
