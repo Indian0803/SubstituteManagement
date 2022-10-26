@@ -75,16 +75,26 @@ class UserAdmin(BaseUserAdmin):
                         middle = names[1]
 
                     email = fields[3]
-
-                    teacher = User.objects.create_user(
-                        email=email,
-                        first_name=unidecode.unidecode(first),
-                        middle_name=unidecode.unidecode(middle),
-                        last_name=unidecode.unidecode(last),
-                        role="",
-                        subject="",
-                        password="test"
-                    )
+                    if middle == None:
+                        teacher = User.objects.create_user(
+                            email=email,
+                            first_name=unidecode.unidecode(first),
+                            middle_name=middle,
+                            last_name=unidecode.unidecode(last),
+                            role="",
+                            subject="",
+                            password="test"
+                        )
+                    else:
+                        teacher = User.objects.create_user(
+                            email=email,
+                            first_name=unidecode.unidecode(first),
+                            middle_name=unidecode.unidecode(middle),
+                            last_name=unidecode.unidecode(last),
+                            role="",
+                            subject="",
+                            password="test"
+                        )
         else:
             form = CsvImportForm()
         context = {'form': form}
@@ -189,7 +199,8 @@ class LessonAdmin(admin.ModelAdmin):
                         teacher.subject.append("French")
 
                     if "Duty Substitute" in fields[8]:
-                        schedule = SubstituteSchedule.objects.get(day=fields[1])
+                        schedule = SubstituteSchedule.objects.get(
+                            day=fields[1])
                         if fields[3] == "Recess":
                             schedule.morning_recess.add(teacher)
                         elif fields[3] == "Lunch 1":
@@ -305,47 +316,46 @@ class SubstituteAdmin(admin.ModelAdmin):
                                     day=days[f[2][:3]])
                         except SubstituteSchedule.DoesNotExist:
                             print("Error")
-                        period = f[-2:]
-                        names = fields[3].split(", ")
-                        first = names[1]
-                        n = names[0].split(" ")
-                        last = n[0]
+                        period = f[2][-2:]
+                        names = fields[3][1:].split(" ")
+                        last = names[0]
+                        first = fields[4][1:-1]
                         try:
-                            teacher = Teacher.objects.get(
+                            teacher = User.objects.get(
                                 first_name=first, last_name=last)
+                            if "P1" == period:
+                                schedule.period_one.add(teacher)
+                            elif "P2" == period:
+                                schedule.period_two.add(teacher)
+                            elif "P3" == period:
+                                schedule.period_three.add(teacher)
+                            elif "P4" == period:
+                                schedule.period_four.add(teacher)
+                            elif "P5" == period:
+                                schedule.period_five.add(teacher)
+                            elif "P6" == period:
+                                schedule.period_six.add(teacher)
+
+                            # FIX TIME
+                            # #########################################
+                            #####################################################
+                            #################################
+
+                            lesson = Lesson.objects.update_or_create(
+                                teacher=teacher,
+                                day=fields[1],
+                                room="",
+                                period=fields[3],
+                                start="",
+                                end="",
+                                name=fields[1],
+                                year=fields[2]
+                            )
+
+                            ##################################
+                            ###################################
                         except User.DoesNotExist:
                             print("Teacher not found")
-                        if "P1" == period:
-                            schedule.period_one.add(teacher)
-                        elif "P2" == period:
-                            schedule.period_two.add(teacher)
-                        elif "P3" == period:
-                            schedule.period_three.add(teacher)
-                        elif "P4" == period:
-                            schedule.period_four.add(teacher)
-                        elif "P5" == period:
-                            schedule.period_five.add(teacher)
-                        elif "P6" == period:
-                            schedule.period_six.add(teacher)
-
-                        # FIX TIME
-                        # #########################################
-                        #####################################################
-                        #################################
-
-                        lesson = Lesson.objects.update_or_create(
-                            teacher=teacher,
-                            day=fields[1],
-                            room="",
-                            period=fields[3],
-                            start="",
-                            end="",
-                            name=fields[1],
-                            year=fields[2]
-                        )
-
-                        ##################################
-                        ###################################
 
         else:
             form = CsvImportForm()

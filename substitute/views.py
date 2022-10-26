@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 
+from django.core.mail import send_mail
 from .models import *
 from .forms import *
 
@@ -23,7 +24,7 @@ def loginPage(request):
                     return redirect("teacher_home")
             else:
                 messages.warning(request,
-                                 "The inputted day is not in this year's academic calendar")
+                                 "Your email address or password is incorrect")
     else:
         form = LoginForm()
     context = {"form": form}
@@ -100,7 +101,7 @@ def absence_report_day(request):
             d = days[day.weekday()]
 
             lessons = tuple(Lesson.objects.filter(
-                teacher=request.user, day=d+" ("+week+")").values_list('period', 'period').order_by('period'))
+                teacher=request.user, day=d+" ("+week+")").values_list('id', 'period').order_by('period'))
             request.session['lessons'] = lessons
             request.session['day'] = day.strftime("%#d %B, %Y")
             return redirect("absence_report_period")
@@ -126,19 +127,68 @@ def absence_report_day(request):
 
 
 def absence_report_period(request):
-    lesson_list = ["Period 1", "Period 2", "Period 3", "Period 4",
-                   "Period 5", "Period 6", "Recess", "Lunch 1", "Lunch 2", "Lunch 3"]
+    # lesson_list = ["Period 1", "Period 2", "Period 3", "Period 4",
+    #                "Period 5", "Period 6", "Recess", "Lunch 1", "Lunch 2", "Lunch 3"]
+    lesson_list = ["", ]
     lessons = request.session.get("lessons")
+    for lesson in lessons:
+        lesson_list.append(lesson[1])
     day = request.session.get("day")
     if request.method == "POST":
         form = AbsenceForm(lessons, request.POST)
         formset = MessageFormSet(request.POST)
         if form.is_valid() and formset.is_valid():
+            day = Lesson.objects.get(id=lessons[0][0]).day
+            sub = SubstituteSchedule.objects.get(day=day)
             periods = form.cleaned_data["period"]
             messages = formset.cleaned_data
-            for period in periods:
-                message = messages[lessons.index([period, period])]['message']
-                
+
+            for i in range(len(lessons)):
+                try:
+                    message = messages[i]['message']
+                except KeyError:
+                    continue
+                lesson = lessons[i][1]
+                if "Period 1" == lesson:
+                    teachers = list(sub.period_one.all())
+                elif "Period 2" == lesson:
+                    teachers = list(sub.period_two.all())
+                elif "Period 3" == lesson:
+                    teachers = list(sub.period_three.all())
+                elif "Period 4" == lesson:
+                    teachers = list(sub.period_four.all())
+                elif "Period 5" == lesson:
+                    teachers = list(sub.period_five.all())
+                elif "Period 6" == lesson:
+                    teachers = list(sub.period_six.all())
+                elif lesson == "Recess":
+                    teachers = list(sub.morning_recess.all())
+                elif lesson == "Lunch 1":
+                    teachers = list(sub.lunch_one.all())
+                elif lesson == "Lunch 2":
+                    teachers = list(sub.lunch_two.all())
+                elif lesson == "Lunch 3":
+                    teachers = list(sub.lunch_three.all())
+
+                if not len(teachers) == 1:
+                    min_count = 99999
+                    min = None
+                    mins = []
+                    for teacher in teachers:
+                        if min_count > teacher.count:
+                            min_count = teacher.count
+                            min = teacher
+                        elif min_count == teacher.count:
+                            if not mins:
+                                mins.append(min)
+                            mins.append(teacher)
+                else:
+                    min = teachers[0]
+
+                # fixxxxxxxxxxxxxxxxxx
+                # finding teacher based on class/department and whether they're absent
+                print("send")
+                send_mail('Substitute Request', 'Test', 'rkawamura0483@gmail.com', ['14086@stmaur.ac.jp'], fail_silently=False)
             return redirect("teacher_home")
 
     form = AbsenceForm(lessons)
@@ -146,3 +196,8 @@ def absence_report_period(request):
     context = {"form": form, 'formset': formset,
                'day': day, 'lesson_list': lesson_list}
     return render(request, "substitute/absence_report_period.html", context)
+
+
+def find_teacher():
+
+    return None

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import environ
 from django.core.management.utils import get_random_secret_key
 import os
 from pathlib import Path
@@ -21,8 +22,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0xor(m*rqs^ic*j#2u&#ko_4056uoqt*+gcrz-)^t$69br6isj'
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,9 +38,6 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.pythonanywhere.com',
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-
-SECRET_KEY = get_random_secret_key()
-
 
 # Application definition
 
@@ -54,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -83,30 +87,30 @@ WSGI_APPLICATION = 'IA.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-# if DEBUG:
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': 'IA',
-#             'USER': 'postgres',
-#             'PASSWORD': '0803Kawa',
-#             'HOST': 'localhost',
-#             'PORT': 5432,
-#         }
-#     }
-# else:
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'saintmaur$db',
-        'USER': 'saintmaur',
-        'PASSWORD': 'stmaur1872',
-        'HOST': 'saintmaur.mysql.pythonanywhere-services.com',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'IA',
+            'USER': 'postgres',
+            'PASSWORD': '0803Kawa',
+            'HOST': 'localhost',
+            'PORT': 5432,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'saintmaur$db',
+            'USER': 'saintmaur',
+            'PASSWORD': 'stmaur1872',
+            'HOST': 'saintmaur.mysql.pythonanywhere-services.com',
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            },
+        }
+    }
 
 
 AUTH_USER_MODEL = 'substitute.User'
@@ -131,6 +135,14 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -140,7 +152,7 @@ TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 

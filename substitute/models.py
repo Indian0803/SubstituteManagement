@@ -16,6 +16,7 @@ class UserManager(BaseUserManager):
             last_name=last_name,
             role=role,
             subject=subject,
+            count=0
         )
 
         user.set_password(password)
@@ -31,6 +32,7 @@ class UserManager(BaseUserManager):
             role=None,
             subject=None,
             password=password,
+            count=0,
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -67,7 +69,7 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=200, null=True)
     role = MultiSelectField(choices=ROLE, null=True)
     subject = MultiSelectField(choices=SUBJECT, null=True)
-    count = models.PositiveSmallIntegerField(null=True)
+    count = models.PositiveSmallIntegerField(null=True, default=0)
 
     objects = UserManager()
 
