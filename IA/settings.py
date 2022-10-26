@@ -133,12 +133,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 SENDGRID_API_KEY = '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'
+EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_SANDBOX_MODE_IN_DEBUG = True
 
-EMAIL_HOST = 'api.sendgrid.com'
-EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
-EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# echo to stdout or any other file-like object that is passed to the backend via the stream kwarg.
+SENDGRID_ECHO_TO_STDOUT = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
