@@ -79,7 +79,7 @@ class UserAdmin(BaseUserAdmin):
                         teacher = User.objects.create_user(
                             email=email,
                             first_name=unidecode.unidecode(first),
-                            middle_name=middle,
+                            middle_name="",
                             last_name=unidecode.unidecode(last),
                             role="",
                             subject="",
