@@ -196,6 +196,8 @@ def absence_report_period(request):
                     ['rkawamura0483@gmail.com'],
                     fail_silently=False,
                 )
+                print("lol")
+                return redirect("absence_report_day")
 
             return redirect("teacher_home")
 
