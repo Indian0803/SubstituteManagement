@@ -134,6 +134,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
 SENDGRID_API_KEY = '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'
 EMAIL_BACKEND = "sendgrid_backend.SendgridBackend"
+SENDGRID_SANDBOX_MODE_IN_DEBUG = False
 
 # echo to stdout or any other file-like object that is passed to the backend via the stream kwarg.
 SENDGRID_ECHO_TO_STDOUT = True
