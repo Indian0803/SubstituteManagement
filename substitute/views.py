@@ -191,7 +191,7 @@ def absence_report_period(request):
 
                 send_mail(
                     'Substitute Request',
-                    'Teacher: ' + request.User.first_name + request.User.last_name +
+                    'Teacher: ' + request.user.first_name + request.user.last_name +
                     "\nDay: "+day+"\nPeriod: "+lesson+"\nMessage: "+message,
                     'rkawamura0483@gmail.com',
                     ['Indiankawamura@gmail.com'],
