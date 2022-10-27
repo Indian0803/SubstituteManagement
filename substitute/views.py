@@ -192,17 +192,15 @@ def absence_report_period(request):
                 send_mail(
                     'Substitute Request',
                     'Teacher: ' + request.user.first_name + " " + request.user.last_name +
-                    "\nDay: "+day+"\nPeriod: "+lesson+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm." +
+                    "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm." +
                     "saintmaur.pythonanywhere.com/confirm/"+str(request.user.id) +
                     "\nIf you are unavailable, please click this url.",
                     'rkawamura0483@gmail.com',
                     ['Indiankawamura@gmail.com'],
                     fail_silently=False,
                 )
-                print(request.session.get("day"))
-                print(lesson)
                 sublesson = Lesson.objects.get(
-                    teacher=request.user, day=request.session.get("day"), period=lesson)
+                    teacher=request.user, day=day, period=lesson)
                 Substitute.objects.create(
                     lesson=sublesson, teacher=request.user, date=request.session.get("day"), verified=False)
                 return redirect("teacher_home")
