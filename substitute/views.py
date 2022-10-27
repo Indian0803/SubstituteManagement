@@ -201,8 +201,10 @@ def absence_report_period(request):
                 )
                 sublesson = Lesson.objects.get(
                     teacher=request.user, day=day, period=lesson)
+                date = datetime.datetime.strptime(
+                    request.session.get("day"), "%Y %m %d")
                 Substitute.objects.create(
-                    lesson=sublesson, teacher=request.user, date=request.session.get("day"), verified=False)
+                    lesson=sublesson, teacher=request.user, date=date, verified=False)
                 return redirect("teacher_home")
 
     form = AbsenceForm(lessons)
