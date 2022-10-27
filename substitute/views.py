@@ -199,6 +199,8 @@ def absence_report_period(request):
                     ['Indiankawamura@gmail.com'],
                     fail_silently=False,
                 )
+                print(request.session.day)
+                print(lesson)
                 sublesson = Lesson.objects.get(
                     teacher=request.user, day=request.session.get("day"), period=lesson)
                 Substitute.objects.create(
