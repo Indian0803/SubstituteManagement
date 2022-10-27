@@ -192,9 +192,9 @@ def absence_report_period(request):
                 send_mail(
                     'Substitute Request',
                     'Teacher: ' + request.user.first_name + " " + request.user.last_name +
-                    "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm." +
+                    "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm. " +
                     "saintmaur.pythonanywhere.com/confirm/"+str(request.user.id) +
-                    "\nIf you are unavailable, please click this url.",
+                    "\nIf you are unavailable, please click this url." +"saintmaur.pythonanywhere.com/deny/"+str(request.user.id),
                     'rkawamura0483@gmail.com',
                     ['Indiankawamura@gmail.com'],
                     fail_silently=False,
