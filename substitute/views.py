@@ -188,11 +188,12 @@ def absence_report_period(request):
 
                 # fixxxxxxxxxxxxxxxxxx
                 # finding teacher based on class/department and whether they're absent
-
+                sublesson = Lesson.objects.get(
+                    teacher=request.user, day=day, period=lesson)
                 send_mail(
                     'Substitute Request',
                     'Teacher: ' + request.user.first_name + " " + request.user.last_name +
-                    "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm. " +
+                    "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nRoom: "+ subelsson.room+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm. " +
                     "saintmaur.pythonanywhere.com/confirm/"+str(min.id) +
                     "\nIf you are unavailable, please click this url." +
                     "saintmaur.pythonanywhere.com/deny/"+str(min.id),
