@@ -225,9 +225,9 @@ def confirm(request, pk):
         sub.verified = True
         sub.save()
         teacher.count += 1
-    return render(request, confirm.html)
+    return render(request, "substitute/confirm.html")
 
 
 def deny(request, pk):
 
-    return render(request, confirm.html)
+    return render(request, "substitute/confirm.html")
