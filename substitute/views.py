@@ -202,6 +202,7 @@ def absence_report_period(request):
                 sublesson = Lesson.objects.get(
                     teacher=request.user, day=day, period=lesson)
                 days = request.session.get("day").split(" ")
+                months = {"January":1,"February":2,"March":3,"April":4,"May":5,"June":6,"July":7,"August":8,"September":9,"October":10,"November":11,"December":12}
                 date = datetime.date(int(days[0]), int(
                     days[1][:-1]), int(days[2]))
                 Substitute.objects.create(
