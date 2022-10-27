@@ -194,7 +194,8 @@ def absence_report_period(request):
                     'Teacher: ' + request.user.first_name + " " + request.user.last_name +
                     "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm. " +
                     "saintmaur.pythonanywhere.com/confirm/"+str(request.user.id) +
-                    "\nIf you are unavailable, please click this url." +"saintmaur.pythonanywhere.com/deny/"+str(request.user.id),
+                    "\nIf you are unavailable, please click this url." +
+                    "saintmaur.pythonanywhere.com/deny/"+str(request.user.id),
                     'rkawamura0483@gmail.com',
                     ['Indiankawamura@gmail.com'],
                     fail_silently=False,
@@ -218,11 +219,12 @@ def absence_report_period(request):
 
 
 def confirm(request, pk):
-    teacher = Teacher.objects.get(id=pk)
+    teacher = User.objects.get(id=pk)
     subsitutes = Substitute.objects.filter(teacher=teacher)
     for sub in subtitutes:
         sub.verified = True
         sub.save()
+        teacher.count += 1
     return render(request, confirm.html)
 
 
