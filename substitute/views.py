@@ -279,6 +279,7 @@ def confirm(request, pk):
     teacher = User.objects.get(id=pk)
     teacher.count += 1
     teacher.save()
+    print("count="+teacher.count)
     substitutes = Substitute.objects.filter(teacher=teacher)
     for sub in substitutes:
         sub.verified = True
