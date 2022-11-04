@@ -109,7 +109,7 @@ class UserAdmin(BaseUserAdmin):
 class LessonAdmin(admin.ModelAdmin):
     list_display = ('teacher', 'name', 'room', 'day', 'period')
     ordering = ('teacher', 'name', 'room', 'day', 'period')
-    list_filter = ('teacher', 'count', 'day')
+    list_filter = ('teacher', 'day')
 
     def get_urls(self):
         urls = super().get_urls()
