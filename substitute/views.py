@@ -282,6 +282,7 @@ def confirm(request, pk):
         sub.verified = True
         sub.save()
         teacher.count += 1
+        teacher.save()
     return render(request, "substitute/confirm.html")
 
 
