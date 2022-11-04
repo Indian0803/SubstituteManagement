@@ -277,6 +277,8 @@ def absence_report_period(request):
 
 def confirm(request, pk):
     teacher = User.objects.get(id=pk)
+    teacher.count += 1
+    teacher.save()
     substitutes = Substitute.objects.filter(teacher=teacher)
     for sub in substitutes:
         sub.verified = True
