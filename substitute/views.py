@@ -253,7 +253,7 @@ def absence_report_period(request):
                     "saintmaur.pythonanywhere.com/confirm/" +
                     "\nIf you are unavailable, please click this url." +
                     "saintmaur.pythonanywhere.com/deny/",
-                    '14086@stmaur.ac.jp',
+                    'rkawamura0483@gmail.com',
                     ['rkawamura0483@gmail.com'],
                     fail_silently=False,
                 )
