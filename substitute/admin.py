@@ -27,7 +27,7 @@ class UserAdmin(BaseUserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password', 'first_name',
-         'middle_name', 'last_name', 'role', 'subject')}),
+         'middle_name', 'last_name', 'role', 'subject', 'count')}),
         ('Permissions', {'fields': ('is_admin',)})
     )
 
@@ -109,6 +109,7 @@ class UserAdmin(BaseUserAdmin):
 class LessonAdmin(admin.ModelAdmin):
     list_display = ('teacher', 'name', 'room', 'day', 'period')
     ordering = ('teacher', 'name', 'room', 'day', 'period')
+    list_filter = ('teacher', 'count', 'day')
 
     def get_urls(self):
         urls = super().get_urls()

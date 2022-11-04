@@ -100,7 +100,7 @@ def teacher_home(request):
     #     teacher=request.user, day=d+" ("+week+")").values_list('id', 'period').order_by('period'))
 
     lessons = tuple(Lesson.objects.filter(
-        teacher=request.user, day="Monday (Week 1)").order_by('period'))
+        teacher=request.user, day="Friday (Week 2)").order_by('period'))
     print(lessons)
     context = {'lessons': lessons}
     return render(request, "substitute/teacher_home.html", context)
