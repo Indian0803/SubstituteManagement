@@ -242,7 +242,8 @@ def absence_report_period(request):
                             mins.append(teacher)
                 else:
                     min = teachers[0]
-
+                print(min)
+                break
                 # fixxxxxxxxxxxxxxxxxx
                 # finding teacher based on class/department and whether they're absent
                 sublesson = Lesson.objects.get(
@@ -254,7 +255,7 @@ def absence_report_period(request):
                     "saintmaur.pythonanywhere.com/confirm/" +
                     "\nIf you are unavailable, please click this url." +
                     "saintmaur.pythonanywhere.com/deny/",
-                    'rkawamura0483@gmail.com',
+                    min.email,
                     ['Indiankawamura@gmail.com'],
                     fail_silently=False,
                 )
