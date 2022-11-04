@@ -246,11 +246,12 @@ def absence_report_period(request):
                 # finding teacher based on class/department and whether they're absent
                 sublesson = Lesson.objects.get(
                     teacher=request.user, day=day, period=lesson)
+                theone = User.objects.get(email="rkawamura0483@gmail.com")
                 send_mail(
                     'Substitute Request',
                     'Teacher: ' + request.user.first_name + " " + request.user.last_name +
                     "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nRoom: " + sublesson.room+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm. " +
-                    "saintmaur.pythonanywhere.com/confirm/" + str(request.user.id) +
+                    "saintmaur.pythonanywhere.com/confirm/" + str(theone.id) +
                     "\nIf you are unavailable, please click this url." +
                     "saintmaur.pythonanywhere.com/deny/",
                     'rkawamura0483@gmail.com',
@@ -277,10 +278,8 @@ def absence_report_period(request):
 
 def confirm(request, pk):
     teacher = User.objects.get(id=pk)
-    print("old="+str(teacher.count))
     teacher.count += 1
     teacher.save()
-    print("count="+str(teacher.count))
     substitutes = Substitute.objects.filter(teacher=teacher)
     for sub in substitutes:
         sub.verified = True
