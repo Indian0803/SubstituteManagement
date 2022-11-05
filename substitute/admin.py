@@ -95,6 +95,11 @@ class UserAdmin(BaseUserAdmin):
                             subject="",
                             password="test"
                         )
+                messages.add_message(
+                        request, messages.INFO, 'File has been uploaded')
+                url = reverse('admin:index')
+                return HttpResponseRedirect(url)
+
         else:
             form = CsvImportForm()
         context = {'form': form}
@@ -107,8 +112,7 @@ class LessonAdmin(admin.ModelAdmin):
 
     def get_urls(self):
         urls = super().get_urls()
-        new_urls = [path('csv_upload/', self.csv_upload),
-                    path('rotation_upload/', self.rotation_upload)]
+        new_urls = [path('csv_upload/', self.csv_upload), ]
         return new_urls + urls
 
     def csv_upload(self, request):
@@ -224,40 +228,11 @@ class LessonAdmin(admin.ModelAdmin):
                         year=fields[10]
                     )
                 sub = SubstituteSchedule.objects.get(day="Monday (Week 1)")
-                print(sub.morning_recess)
 
+                messages.add_message(
+                    request, messages.INFO, 'File has been uploaded')
                 url = reverse('admin:index')
                 return HttpResponseRedirect(url)
-
-        else:
-            form = CsvImportForm()
-        context = {'form': form}
-        return render(request, 'admin/csv_upload.html', context)
-
-    def rotation_upload(self, request):
-        if request.method == "POST":
-            form = CsvImportForm(request.POST, request.FILES)
-            if form.is_valid():
-                csv_file = request.FILES["csv_upload"]
-                if not csv_file.name.endswith('.csv'):
-                    messages.warning(
-                        request, 'The wrong file type was uploaded')
-                    return HttpResponseRedirect(request.path_info)
-                file_data = csv_file.read().decode(("utf-8"))
-                csv_data = file_data.split("\n")
-                csv_data.pop(0)
-                csv_data.pop(-1)
-
-                for r in csv_data:
-                    fields = r.split(',')
-                    type = fields[1]
-                    start = datetime.datetime.strptime(fields[2], '%Y/%m/%d')
-                    if fields[3] == '""':
-                        end = None
-                    else:
-                        end = datetime.datetime.strptime(fields[3], '%Y/%m/%d')
-                    Holiday.objects.update_or_create(
-                        start=start, end=end, type=type)
 
         else:
             form = CsvImportForm()
@@ -356,6 +331,51 @@ class SubstituteAdmin(admin.ModelAdmin):
                             ###################################
                         except User.DoesNotExist:
                             print("Teacher not found")
+                messages.add_message(
+                    request, messages.INFO, 'File has been uploaded')
+                url = reverse('admin:index')
+                return HttpResponseRedirect(url)
+
+        else:
+            form = CsvImportForm()
+        context = {'form': form}
+        return render(request, 'admin/csv_upload.html', context)
+
+
+class HolidayAdmin(admin.ModelAdmin):
+    def get_urls(self):
+        urls = super().get_urls()
+        new_urls = [path('csv_upload/', self.csv_upload), ]
+        return new_urls + urls
+
+    def csv_upload(self, request):
+        if request.method == "POST":
+            form = CsvImportForm(request.POST, request.FILES)
+            if form.is_valid():
+                csv_file = request.FILES["csv_upload"]
+                if not csv_file.name.endswith('.csv'):
+                    messages.warning(
+                        request, 'The wrong file type was uploaded')
+                    return HttpResponseRedirect(request.path_info)
+                file_data = csv_file.read().decode(("utf-8"))
+                csv_data = file_data.split("\n")
+                csv_data.pop(0)
+                csv_data.pop(-1)
+
+                for r in csv_data:
+                    fields = r.split(',')
+                    type = fields[1]
+                    start = datetime.datetime.strptime(fields[2], '%Y/%m/%d')
+                    if fields[3] == '""':
+                        end = None
+                    else:
+                        end = datetime.datetime.strptime(fields[3], '%Y/%m/%d')
+                    Holiday.objects.update_or_create(
+                        start=start, end=end, type=type)
+                messages.add_message(
+                    request, messages.INFO, 'File has been uploaded')
+                url = reverse('admin:index')
+                return HttpResponseRedirect(url)
 
         else:
             form = CsvImportForm()
@@ -367,4 +387,4 @@ admin.site.unregister(Group)
 admin.site.register(User, UserAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(SubstituteSchedule, SubstituteAdmin)
-admin.site.register(Holiday)
+admin.site.register(Holiday, HolidayAdmin)
