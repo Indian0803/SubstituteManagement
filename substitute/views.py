@@ -5,10 +5,13 @@ from django.contrib.auth import authenticate, login, logout
 from .models import *
 from .forms import *
 import datetime
+from .decorators import unauthenticated_user
 
 from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 
 
+@unauthenticated_user
 def loginPage(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -37,14 +40,17 @@ def logoutUser(request):
     return redirect("login")
 
 
+@login_required(login_url="login")
 def teacher_home(request):
     return render(request, "substitute/teacher_home.html")
 
 
+@login_required(login_url="login")
 def teacher_schedule(request):
     return render(request, "substitute/teacher_schedule.html")
 
 
+@login_required(login_url="login")
 def absence_report_day(request):
     yr = Lesson.objects.first().__getattribute__("year")
     yr = yr.split("-")
@@ -127,6 +133,7 @@ def absence_report_day(request):
     return render(request, "substitute/absence_report_day.html", context)
 
 
+@login_required(login_url="login")
 def absence_report_period(request):
     # lesson_list = ["Period 1", "Period 2", "Period 3", "Period 4",
     #                "Period 5", "Period 6", "Recess", "Lunch 1", "Lunch 2", "Lunch 3"]
@@ -193,8 +200,8 @@ def absence_report_period(request):
                 send_mail(
                     'Substitute Request',
                     'Teacher: ' + request.user.first_name + " " + request.user.last_name +
-                    "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nRoom: "+ sublesson.room+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm. " +
-                    "saintmaur.pythonanywhere.com/confirm/"+
+                    "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nRoom: " + sublesson.room+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm. " +
+                    "saintmaur.pythonanywhere.com/confirm/" +
                     "\nIf you are unavailable, please click this url." +
                     "saintmaur.pythonanywhere.com/deny/",
                     'rkawamura0483@gmail.com',

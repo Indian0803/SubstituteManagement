@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/wsgi/
 
 from django.core.wsgi import get_wsgi_application
 import os
+import sys
 os.environ['DJANGO_SETTINGS_MODULE'] = 'IA.settings'
 
 path = '/home/saintmaur/saintmaur.pythonanywhere.com'
