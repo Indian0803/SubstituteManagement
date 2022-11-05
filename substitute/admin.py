@@ -22,8 +22,8 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     list_display = ('email', 'first_name', 'middle_name',
-                    'last_name', 'role', 'subject', 'is_admin')
-    list_filter = ('is_admin',)
+                    'last_name', 'role', 'subject', 'count', 'is_admin')
+    list_filter = ('is_admin', 'count')
 
     fieldsets = (
         (None, {'fields': ('email', 'password', 'first_name',
@@ -39,9 +39,9 @@ class UserAdmin(BaseUserAdmin):
     )
 
     search_fields = ('email', 'first_name', 'middle_name',
-                     'last_name', 'role', 'subject')
+                     'last_name', 'role', 'subject', 'count')
     ordering = ('email', 'first_name', 'middle_name',
-                'last_name', 'role', 'subject')
+                'last_name', 'role', 'subject', 'count')
     filter_horizontal = ()
 
     def get_urls(self):

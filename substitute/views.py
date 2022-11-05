@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from .models import *
 from .forms import *
 import datetime
+from datetime import date, timedelta
 from .decorators import unauthenticated_user
 
 from django.core.mail import send_mail
@@ -42,7 +43,67 @@ def logoutUser(request):
 
 @login_required(login_url="login")
 def teacher_home(request):
-    return render(request, "substitute/teacher_home.html")
+    # yr = Lesson.objects.first().__getattribute__("year")
+    # yr = yr.split("-")
+    # year = []
+    # year.append(int(yr[0]))
+    # year.append(int(yr[1]))
+    # day = date.today()
+
+    # # Validation
+    # start = Holiday.objects.get(type="Calendar").start
+    # dt1 = day - start
+    # end = Holiday.objects.get(type="Calendar").end
+    # dt2 = day - end
+    # if (dt1.days < 0) or (dt2.days > 0):
+    #     lessons = None
+    #     context = {'lessons': lessons}
+    #     return render(request, "substitute/teacher_home.html", context)
+    # elif day.weekday() == 5 or day.weekday() == 6:
+    #     lessons = None
+    #     context = {'lessons': lessons}
+    #     return render(request, "substitute/teacher_home.html", context)
+
+    # holidays = Holiday.objects.filter(type="Holiday")
+    # for holiday in holidays:
+    #     if holiday.end == None:
+    #         if day == holiday.start:
+    #             lessons = None
+    #             context = {'lessons': lessons}
+    #             return render(request, "substitute/teacher_home.html", context)
+    #     elif holiday.start <= day <= holiday.end:
+    #         lessons = None
+    #         context = {'lessons': lessons}
+    #         return render(request, "substitute/teacher_home.html", context)
+
+    # # Get schedule
+    # if dt1.days % 14 <= 6:
+    #     week = "Week 1"
+    # else:
+    #     week = "Week 2"
+
+    # for holiday in holidays:
+    #     if holiday.end != None:
+    #         dt = holiday.end - holiday.start
+    #         if (dt.days + 1) >= 7 and holiday.start < day:
+    #             if 6 <= dt.days % 14 <= 8:
+    #                 if week == "Week 1":
+    #                     week = "Week 2"
+    #                 else:
+    #                     week = "Week 1"
+
+    # days = ['Monday', 'Tuesday', 'Wednesday',
+    #         'Thursday', 'Friday', 'Saturday', 'Sunday']
+    # d = days[day.weekday()]
+
+    # lessons = tuple(Lesson.objects.filter(
+    #     teacher=request.user, day=d+" ("+week+")").values_list('id', 'period').order_by('period'))
+
+    lessons = tuple(Lesson.objects.filter(
+        teacher=request.user, day="Monday (Week 1)").order_by('period'))
+    print(lessons)
+    context = {'lessons': lessons}
+    return render(request, "substitute/teacher_home.html", context)
 
 
 @login_required(login_url="login")
@@ -60,6 +121,7 @@ def absence_report_day(request):
     if request.method == "POST":
         form = AbsenceDayForm(year, request.POST)
         if form.is_valid():
+
             day = form.cleaned_data["day"]
 
             # Validation
@@ -113,18 +175,6 @@ def absence_report_day(request):
             request.session['day'] = day.strftime("%#d %B, %Y")
             return redirect("absence_report_period")
 
-        # user = User.objects.get(id=request.user.id)
-        # lessons = []
-        # monday1 = Lesson.objects.filter(teacher=user, day="Monday (Week 1)").order_by('period')
-        # tuesday1 = Lesson.objects.filter(teacher=user, day="Tuesday (Week 1)").order_by('period')
-        # wednesday1 = Lesson.objects.filter(teacher=user, day="Wednesday (Week 1)").order_by('period')
-        # thursday1 = Lesson.objects.filter(teacher=user, day="Thursday (Week 1)").order_by('period')
-        # friday1 = Lesson.objects.filter(teacher=user, day="Friday (Week 1)").order_by('period')
-        # monday2 = Lesson.objects.filter(teacher=user, day="Monday (Week 2)").order_by('period')
-        # tuesday2 = Lesson.objects.filter(teacher=user, day="Tuesday (Week 2)").order_by('period')
-        # wednesday2 = Lesson.objects.filter(teacher=user, day="Wednesday (Week 2)").order_by('period')
-        # thursday2 = Lesson.objects.filter(teacher=user, day="Thursday (Week 2)").order_by('period')
-        # friday2 = Lesson.objects.filter(teacher=user, day="Friday (Week 2)").order_by('period')
     # When there are no classes
 
     form = AbsenceDayForm(year=year)
