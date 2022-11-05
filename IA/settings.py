@@ -27,7 +27,7 @@ SECRET_KEY = '0xor(m*rqs^ic*j#2u&#ko_4056uoqt*+gcrz-)^t$69br6isj'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.pythonanywhere.com',
                  'saintmaur.pythonanywhere.com']
