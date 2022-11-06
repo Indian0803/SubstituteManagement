@@ -96,7 +96,7 @@ class UserAdmin(BaseUserAdmin):
                             password="test"
                         )
                 messages.add_message(
-                        request, messages.INFO, 'File has been uploaded')
+                    request, messages.INFO, 'File has been uploaded')
                 url = reverse('admin:index')
                 return HttpResponseRedirect(url)
 
@@ -343,6 +343,8 @@ class SubstituteAdmin(admin.ModelAdmin):
 
 
 class HolidayAdmin(admin.ModelAdmin):
+    list_display = ('start', 'end', 'type')
+
     def get_urls(self):
         urls = super().get_urls()
         new_urls = [path('csv_upload/', self.csv_upload), ]
