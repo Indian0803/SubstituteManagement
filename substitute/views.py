@@ -276,7 +276,7 @@ def absence_report_period(request):
                 sublesson = Lesson.objects.get(
                     teacher=request.user, day=day, period=lesson)
 
-                subteacher = min
+                subteacher = User.objects.get(email="rkawamura0483@gmail.com")
                 send_mail(
                     # Title
                     'Substitute Request',
