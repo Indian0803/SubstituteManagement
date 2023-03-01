@@ -57,7 +57,9 @@ def teacher_home(request):
     lessons = tuple(Lesson.objects.filter(
         teacher=request.user, day="Wednesday (Week 2)").values_list('id', 'period').order_by('period'))
     context = {'lessons': lessons}
+    print(lessons)
     return render(request, "substitute/teacher_home.html", context)
+    print("I'm here")
     day = datetime.date.today()
     start = Holiday.objects.get(type="Calendar").start
     dt1 = day - start
