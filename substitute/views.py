@@ -182,10 +182,14 @@ def absence_report_day(request):
                     dt = holiday.end - holiday.start
                     # If the holiday is longer than a week and the given day is after the holiday, the week switches
                     if (dt.days) >= 6 and holiday.start < day:
-                        if week == "Week 1":
-                            week = "Week 2"
-                        else:
-                            week = "Week 1"
+                        # Checking if the holiday length is an odd number, meaning that the weeks switch
+                        print(dt.days)
+                        if 6 <= dt.days % 14 <= 8:
+                            # Switching week 1/2
+                            if week == "Week 1":
+                                week = "Week 2"
+                            else:
+                                week = "Week 1"
 
             days = ['Monday', 'Tuesday', 'Wednesday',
                     'Thursday', 'Friday', 'Saturday', 'Sunday']
