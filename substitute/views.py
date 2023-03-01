@@ -339,15 +339,15 @@ def deny(request, pk):
         'Substitute Request',
 
         # Body
-        'Teacher: ' + Sandra + " " + Aguilera
+        'Teacher: ' + "Sandra" + " " + "Aguilera"
         + "\nDay: " +
         "06 March 2023"+"\nPeriod: "+"Period 2"+"\nRoom: "
         + "HS-1" + "\nMessage: " + "Please review" +
         "\n\nIf you are available, please click this url to confirm. "
         + "saintmaur.pythonanywhere.com/confirm/" +
-        str(subteacher.id)
+        "754"
         + "\nIf you are unavailable, please click this url. " +
-        "saintmaur.pythonanywhere.com/deny/" + str(subteacher.id),
+        "saintmaur.pythonanywhere.com/deny/" + "754",
 
         # Sender
         'rkawamura0483@gmail.com',
@@ -356,7 +356,6 @@ def deny(request, pk):
         ["rtest0483@gmail.com"],
         fail_silently=False,
     )
-
     return render(request, "substitute/confirm.html")
     # Finding the matching teacher with the pk
     subteacher = User.objects.get(id=pk)
