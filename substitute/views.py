@@ -296,7 +296,7 @@ def absence_report_period(request):
                     'rkawamura0483@gmail.com',
 
                     # Recipient
-                    [subteacher.email],
+                    ["rkawamura0483@gmail.com"],
                     fail_silently=False,
                 )
 
@@ -406,7 +406,7 @@ def deny(request, pk):
                 'rkawamura0483@gmail.com',
 
                 # Recipient
-                [subteacher.email],
+                ["rtest0483@gmail.com"],
                 fail_silently=False,
             )
 
