@@ -385,7 +385,7 @@ def deny(request, pk):
 
             sublesson = Lesson.objects.get(
                 teacher=request.user, day=day, period=lesson)
-            subteacher = User.objects.get(email="rkawamura0483@gmail.com")
+            subteacher = User.objects.get(email="rtest0483@gmail.com")
 
             send_mail(
                 # Title
