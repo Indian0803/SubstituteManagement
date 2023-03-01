@@ -289,7 +289,7 @@ def absence_report_period(request):
                     "\n\nIf you are available, please click this url to confirm. "
                     + "saintmaur.pythonanywhere.com/confirm/" +
                     str(subteacher.id)
-                    + "\nIf you are unavailable, please click this url." +
+                    + "\nIf you are unavailable, please click this url. " +
                     "saintmaur.pythonanywhere.com/deny/" + str(subteacher.id),
 
                     # Sender
