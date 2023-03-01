@@ -63,10 +63,14 @@ def teacher_home(request):
     # Checking if the given day is before/past the academic calendar
     if (dt1.days < 0) or (dt2.days > 0):
         lessons = None
+        context = {'lessons': lessons}
+        return render(request, "substitute/teacher_home.html", context)
 
     # Checking if the day is not a weekend
     if day.weekday() == 5 or day.weekday() == 6:
         lessons = None
+        context = {'lessons': lessons}
+        return render(request, "substitute/teacher_home.html", context)
 
     # Obtaining holidays recorded in the DB and checking against the range
     holidays = Holiday.objects.filter(type="Holiday")
@@ -75,9 +79,13 @@ def teacher_home(request):
         if holiday.end == None:
             if day == holiday.start:
                 lessons = None
+                context = {'lessons': lessons}
+                return render(request, "substitute/teacher_home.html", context)
         # If the holiday spans over a few days
         elif holiday.start <= day <= holiday.end:
             lessons = None
+            context = {'lessons': lessons}
+            return render(request, "substitute/teacher_home.html", context)
 
     # Check week 1 or 2 according to the academic calendar without considering holidays
     if dt1.days % 14 <= 6:
