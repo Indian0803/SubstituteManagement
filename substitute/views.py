@@ -334,6 +334,30 @@ def confirm(request, pk):
 
 
 def deny(request, pk):
+    send_mail(
+        # Title
+        'Substitute Request',
+
+        # Body
+        'Teacher: ' + Sandra + " " + Aguilera
+        + "\nDay: " +
+        "06 March 2023"+"\nPeriod: "+"Period 2"+"\nRoom: "
+        + "HS-1" + "\nMessage: " + "Please review" +
+        "\n\nIf you are available, please click this url to confirm. "
+        + "saintmaur.pythonanywhere.com/confirm/" +
+        str(subteacher.id)
+        + "\nIf you are unavailable, please click this url. " +
+        "saintmaur.pythonanywhere.com/deny/" + str(subteacher.id),
+
+        # Sender
+        'rkawamura0483@gmail.com',
+
+        # Recipient
+        ["rtest0483@gmail.com"],
+        fail_silently=False,
+    )
+
+    return render(request, "substitute/confirm.html")
     # Finding the matching teacher with the pk
     subteacher = User.objects.get(id=pk)
     # Finding the lesson that the teacher is substituting for
