@@ -339,21 +339,21 @@ def deny(request, pk):
         'Substitute Request',
 
         # Body
-        'Teacher: ' + "Sandra" + " " + "Aguilera"
-        + "\nDay: " +
-        "06 March 2023"+"\nPeriod: "+"Period 2"+"\nRoom: "
-        + "HS-1" + "\nMessage: " + "Please review" +
-        "\n\nIf you are available, please click this url to confirm. "
-        + "saintmaur.pythonanywhere.com/confirm/" +
-        "754"
-        + "\nIf you are unavailable, please click this url. " +
-        "saintmaur.pythonanywhere.com/deny/" + "754",
+        'Teacher: ' + 'Sandra' + ' ' + 'Aguilera'
+        + '\nDay: ' +
+        '06 March 2023'+'\nPeriod: '+'Period 2'+'\nRoom: '
+        + 'HS-1' + '\nMessage: ' + 'Please review' +
+        '\n\nIf you are available, please click this url to confirm. '
+        + 'saintmaur.pythonanywhere.com/confirm/' +
+        '754'
+        + '\nIf you are unavailable, please click this url. ' +
+        'saintmaur.pythonanywhere.com/deny/' + '754',
 
         # Sender
         'rkawamura0483@gmail.com',
 
         # Recipient
-        ["rtest0483@gmail.com"],
+        ['rtest0483@gmail.com'],
         fail_silently=False,
     )
     return render(request, "substitute/confirm.html")
