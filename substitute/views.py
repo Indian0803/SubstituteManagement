@@ -55,11 +55,9 @@ def logoutUser(request):
 def teacher_home(request):
     # Passing lesson information
     lessons = tuple(Lesson.objects.filter(
-        teacher=request.user, day="Wednesday (Week 2)").values_list('id', 'period').order_by('period'))
+        teacher=request.user, day="Wednesday (Week 2)").order_by('period'))
     context = {'lessons': lessons}
-    print(lessons)
     return render(request, "substitute/teacher_home.html", context)
-    print("I'm here")
     day = datetime.date.today()
     start = Holiday.objects.get(type="Calendar").start
     dt1 = day - start
@@ -120,8 +118,6 @@ def teacher_home(request):
     d = days[day.weekday()]
     lessons = tuple(Lesson.objects.filter(
         teacher=request.user, day=d+" ("+week+")").values_list('id', 'period').order_by('period'))
-    lessons = tuple(Lesson.objects.filter(
-        teacher=request.user, day="Wednesday (Week 2)").values_list('id', 'period').order_by('period'))
     context = {'lessons': lessons}
     return render(request, "substitute/teacher_home.html", context)
 
