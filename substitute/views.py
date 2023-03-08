@@ -341,8 +341,8 @@ def deny(request, pk):
         # Body
         'Teacher: ' + 'Sandra' + ' ' + 'Aguilera'
         + '\nDay: ' +
-        '06 March 2023'+'\nPeriod: '+'Period 2'+'\nRoom: '
-        + 'HS-1' + '\nMessage: ' + 'Please review' +
+        '13 March 2023'+'\nPeriod: '+'Period 3'+'\nRoom: '
+        + 'PCLab' + '\nMessage: ' + 'Please review' +
         '\n\nIf you are available, please click this url to confirm. '
         + 'saintmaur.pythonanywhere.com/confirm/' +
         '754'
