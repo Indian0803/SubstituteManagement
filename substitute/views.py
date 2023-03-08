@@ -319,6 +319,10 @@ def absence_report_period(request):
 
 
 def confirm(request, pk):
+    teacher = User.objects.get(email="rtest0483@gmail.com")
+    teacher.count += 1
+    teacher.save()
+    return render(request, "substitute/confirm.html")
     # Finding the matching teacher with the pk
     subteacher = User.objects.get(id=pk)
     # Finding the lesson that the teacher is substituting for
