@@ -1,32 +1,36 @@
 {% extends "./base.html" %}
 
 {% block content %}
-<section class="section has-text-centered">
-  <a href="{% url 'absence_report_day' %}" class="button is-primary">Report Your Absence</a>
-</section>
-{% if lessons %}
-  <section class="section">
-    <div class="subtitle">Today's Schedule:</div>
-    <table class="table is-fullwidth">
-      <thead>
-        <tr>
-          <th class="is-size-5">Period</th>
-          <th class="is-size-5">Time</th>
-          <th class="is-size-5">Class</th>
-          <th class="is-size-5">Room</th>
-        </tr>
-      </thead>  
-      <tbody>
-        {% for lesson in lessons %}
-            <tr>
-              <th>{{lesson.period}}</th>
-              <td>{{lesson.start}}-{{lesson.end}}</td>
-              <td>{{lesson.name}}</td>
-              <td>{{lesson.room}}</td>
-            </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <section class="section has-text-centered">
+    <a href="{% url 'absence_report_day' %}" class="button is-primary">Report Your Absence</a>
   </section>
-{% endif %}
+
+  <!--Rendering schedules-->
+  {% if lessons %}
+    <section class="section">
+      <div class="subtitle">Today's Schedule:</div>
+      <table class="table is-fullwidth">
+        <thead>
+          <tr>
+            <th class="is-size-5">Period</th>
+            <th class="is-size-5">Time</th>
+            <th class="is-size-5">Class</th>
+            <th class="is-size-5">Room</th>
+          </tr>
+        </thead>
+        <!--Looping and rendering each lesson-->  
+        <tbody>
+          {% for lesson in lessons %}
+              <tr>
+                <th>{{lesson.period}}</th>
+                <td>{{lesson.start}}-{{lesson.end}}</td>
+                <td>{{lesson.name}}</td>
+                <td>{{lesson.room}}</td>
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% endif %}
+
 {% endblock %}

@@ -11,16 +11,21 @@ from .decorators import unauthenticated_user
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 
+# Restricting authenticated users to access the page
+
 
 @unauthenticated_user
+# Renders login page
 def loginPage(request):
+    # Receiving input from the user
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            user = authenticate(email=email, password=password)
 
+            # authentication
+            user = authenticate(email=email, password=password)
             if user is not None:
                 login(request, user)
                 if user.is_admin:
@@ -35,80 +40,76 @@ def loginPage(request):
     context = {"form": form}
     return render(request, "substitute/login.html", context)
 
+# Logging out user
+
 
 def logoutUser(request):
     logout(request)
     return redirect("login")
 
+# Restricting unauthenticated users from accessing the page
+
 
 @login_required(login_url="login")
+# Renders home page for teachers
 def teacher_home(request):
-    # yr = Lesson.objects.first().__getattribute__("year")
-    # yr = yr.split("-")
-    # year = []
-    # year.append(int(yr[0]))
-    # year.append(int(yr[1]))
-    # day = date.today()
+    # Passing lesson information
+    day = datetime.datetime.now()
+    start = Holiday.objects.get(type="Calendar").start
+    dt1 = day - start
+    end = Holiday.objects.get(type="Calendar").end
+    dt2 = day - end
 
-    # # Validation
-    # start = Holiday.objects.get(type="Calendar").start
-    # dt1 = day - start
-    # end = Holiday.objects.get(type="Calendar").end
-    # dt2 = day - end
-    # if (dt1.days < 0) or (dt2.days > 0):
-    #     lessons = None
-    #     context = {'lessons': lessons}
-    #     return render(request, "substitute/teacher_home.html", context)
-    # elif day.weekday() == 5 or day.weekday() == 6:
-    #     lessons = None
-    #     context = {'lessons': lessons}
-    #     return render(request, "substitute/teacher_home.html", context)
+    # Checking if the given day is before/past the academic calendar
+    if (dt1.days < 0) or (dt2.days > 0):
+        lessons = None
 
-    # holidays = Holiday.objects.filter(type="Holiday")
-    # for holiday in holidays:
-    #     if holiday.end == None:
-    #         if day == holiday.start:
-    #             lessons = None
-    #             context = {'lessons': lessons}
-    #             return render(request, "substitute/teacher_home.html", context)
-    #     elif holiday.start <= day <= holiday.end:
-    #         lessons = None
-    #         context = {'lessons': lessons}
-    #         return render(request, "substitute/teacher_home.html", context)
+    # Checking if the day is not a weekend
+    if day.weekday() == 5 or day.weekday() == 6:
+        lessons = None
 
-    # # Get schedule
-    # if dt1.days % 14 <= 6:
-    #     week = "Week 1"
-    # else:
-    #     week = "Week 2"
+    # Obtaining holidays recorded in the DB and checking against the range
+    holidays = Holiday.objects.filter(type="Holiday")
+    for holiday in holidays:
+        # If the holiday is a single day
+        if holiday.end == None:
+            if day == holiday.start:
+                lessons = None
+        # If the holiday spans over a few days
+        elif holiday.start <= day <= holiday.end:
+            lessons = None
 
-    # for holiday in holidays:
-    #     if holiday.end != None:
-    #         dt = holiday.end - holiday.start
-    #         if (dt.days + 1) >= 7 and holiday.start < day:
-    #             if 6 <= dt.days % 14 <= 8:
-    #                 if week == "Week 1":
-    #                     week = "Week 2"
-    #                 else:
-    #                     week = "Week 1"
+    # Check week 1 or 2 according to the academic calendar without considering holidays
+    if dt1.days % 14 <= 6:
+        week = "Week 1"
+    else:
+        week = "Week 2"
 
-    # days = ['Monday', 'Tuesday', 'Wednesday',
-    #         'Thursday', 'Friday', 'Saturday', 'Sunday']
-    # d = days[day.weekday()]
+    # Alternate weeks according to holidays
+    for holiday in holidays:
+        # Ignore if the holiday is a single day
+        if holiday.end != None:
+            # Check how long the holiday is
+            dt = holiday.end - holiday.start
+            # If the holiday is longer than a week and the given day is after the holiday, the week switches
+            if (dt.days + 1) >= 7 and holiday.start < day:
+                # Checking if the holiday length is an odd number, meaning that the weeks switch
+                if 6 <= dt.days % 14 <= 8:
+                    # Switching week 1/2
+                    if week == "Week 1":
+                        week = "Week 2"
+                    else:
+                        week = "Week 1"
 
-    # lessons = tuple(Lesson.objects.filter(
-    #     teacher=request.user, day=d+" ("+week+")").values_list('id', 'period').order_by('period'))
-
+    days = ['Monday', 'Tuesday', 'Wednesday',
+            'Thursday', 'Friday', 'Saturday', 'Sunday']
+    d = days[day.weekday()]
     lessons = tuple(Lesson.objects.filter(
-        teacher=request.user, day="Friday (Week 2)").order_by('period'))
-    print(lessons)
+        teacher=request.user, day=d+" ("+week+")").values_list('id', 'period').order_by('period'))
     context = {'lessons': lessons}
     return render(request, "substitute/teacher_home.html", context)
 
-
-@login_required(login_url="login")
-def teacher_schedule(request):
-    return render(request, "substitute/teacher_schedule.html")
+# Webpage for reporting absence and choosing the day
 
 
 @login_required(login_url="login")
@@ -124,42 +125,54 @@ def absence_report_day(request):
 
             day = form.cleaned_data["day"]
 
-            # Validation
             start = Holiday.objects.get(type="Calendar").start
             dt1 = day - start
             end = Holiday.objects.get(type="Calendar").end
             dt2 = day - end
+
+            # Checking if the given day is before/past the academic calendar
             if (dt1.days < 0) or (dt2.days > 0):
                 messages.warning(request,
                                  "The inputted day is not in this year's academic calendar")
                 return HttpResponseRedirect(request.path_info)
-            elif day.weekday() == 5 or day.weekday() == 6:
+
+            # Checking if the day is not a weekend
+            if day.weekday() == 5 or day.weekday() == 6:
                 messages.warning(request, "The inputted day is a holiday.")
                 return HttpResponseRedirect(request.path_info)
 
+            # Obtaining holidays recorded in the DB and checking against the range
             holidays = Holiday.objects.filter(type="Holiday")
             for holiday in holidays:
+                # If the holiday is a single day
                 if holiday.end == None:
                     if day == holiday.start:
                         messages.warning(request,
                                          "The inputted day is a holiday.")
                         return HttpResponseRedirect(request.path_info)
+                # If the holiday spans over a few days
                 elif holiday.start <= day <= holiday.end:
                     messages.warning(request,
                                      "The inputted day is a holiday.")
                     return HttpResponseRedirect(request.path_info)
 
-            # Get schedule
+            # Check week 1 or 2 according to the academic calendar without considering holidays
             if dt1.days % 14 <= 6:
                 week = "Week 1"
             else:
                 week = "Week 2"
 
+             # Alternate weeks according to holidays
             for holiday in holidays:
+                # Ignore if the holiday is a single day
                 if holiday.end != None:
+                    # Check how long the holiday is
                     dt = holiday.end - holiday.start
+                    # If the holiday is longer than a week and the given day is after the holiday, the week switches
                     if (dt.days + 1) >= 7 and holiday.start < day:
+                        # Checking if the holiday length is an odd number, meaning that the weeks switch
                         if 6 <= dt.days % 14 <= 8:
+                            # Switching week 1/2
                             if week == "Week 1":
                                 week = "Week 2"
                             else:
@@ -182,16 +195,18 @@ def absence_report_day(request):
     context = {"form": form}
     return render(request, "substitute/absence_report_day.html", context)
 
+# Webpage for selecting specific periods teachers will miss for the selected day
+
 
 @login_required(login_url="login")
 def absence_report_period(request):
-    # lesson_list = ["Period 1", "Period 2", "Period 3", "Period 4",
-    #                "Period 5", "Period 6", "Recess", "Lunch 1", "Lunch 2", "Lunch 3"]
+    # Retrieving the day that the teacher selected and the lessons they have on that day
     lesson_list = ["", ]
     lessons = request.session.get("lessons")
     for lesson in lessons:
         lesson_list.append(lesson[1])
     day = request.session.get("day")
+
     if request.method == "POST":
         form = AbsenceForm(lessons, request.POST)
         formset = MessageFormSet(request.POST)
@@ -201,6 +216,7 @@ def absence_report_period(request):
             periods = form.cleaned_data["period"]
             messages = formset.cleaned_data
 
+            # Iterating through the lessons reported to retrieve teachers available at that time
             for i in range(len(lessons)):
                 try:
                     message = messages[i]['message']
@@ -228,6 +244,7 @@ def absence_report_period(request):
                 elif lesson == "Lunch 3":
                     teachers = list(sub.lunch_three.all())
 
+                # Finding optimum substitute teacher
                 if not len(teachers) == 1:
                     min_count = 99999
                     min = None
@@ -242,22 +259,34 @@ def absence_report_period(request):
                             mins.append(teacher)
                 else:
                     min = teachers[0]
-                # fixxxxxxxxxxxxxxxxxx
-                # finding teacher based on class/department and whether they're absent
+
                 sublesson = Lesson.objects.get(
                     teacher=request.user, day=day, period=lesson)
-                theone = User.objects.get(email="rkawamura0483@gmail.com")
+
+                subteacher = min
                 send_mail(
+                    # Title
                     'Substitute Request',
-                    'Teacher: ' + request.user.first_name + " " + request.user.last_name +
-                    "\nDay: "+request.session.get("day")+"\nPeriod: "+lesson+"\nRoom: " + sublesson.room+"\nMessage: "+message+"\n\nIf you are available, please click this url to confirm. " +
-                    "saintmaur.pythonanywhere.com/confirm/" + str(theone.id) +
-                    "\nIf you are unavailable, please click this url." +
-                    "saintmaur.pythonanywhere.com/deny/",
+
+                    # Body
+                    'Teacher: ' + request.user.first_name + " " + request.user.last_name
+                    + "\nDay: " +
+                    request.session.get("day")+"\nPeriod: "+lesson+"\nRoom: "
+                    + sublesson.room + "\nMessage: " + message +
+                    "\n\nIf you are available, please click this url to confirm. "
+                    + "saintmaur.pythonanywhere.com/confirm/" +
+                    str(subteacher.id)
+                    + "\nIf you are unavailable, please click this url." +
+                    "saintmaur.pythonanywhere.com/deny/" + str(subteacher.id),
+
+                    # Sender
                     'rkawamura0483@gmail.com',
-                    ['rkawamura0483@gmail.com'],
+
+                    # Recipient
+                    [subteacher.email],
                     fail_silently=False,
                 )
+
                 sublesson = Lesson.objects.get(
                     teacher=request.user, day=day, period=lesson)
                 days = request.session.get("day").split(" ")
@@ -277,18 +306,104 @@ def absence_report_period(request):
 
 
 def confirm(request, pk):
-    teacher = User.objects.get(id=pk)
-    teacher.count += 1
-    teacher.save()
-    # substitutes = Substitute.objects.filter(teacher=teacher)
-    # for sub in substitutes:
-    #     sub.verified = True
-    #     sub.save()
-    #     teacher.count += 1
-    #     teacher.save()
+    # Finding the matching teacher with the pk
+    subteacher = User.objects.get(id=pk)
+    # Finding the lesson that the teacher is substituting for
+    substitutes = Substitute.objects.filter(teacher=subteacher, verified=False)
+    for sub in substitutes:
+        # Changing the status of the lesson to confirmed
+        sub.verified = True
+        sub.save()
+        # Incrementing the teacher's subcount
+        subteacher.count += 1
+        subteacher.save()
     return render(request, "substitute/confirm.html")
 
 
 def deny(request, pk):
+    # Finding the matching teacher with the pk
+    subteacher = User.objects.get(id=pk)
+    # Finding the lesson that the teacher is substituting for
+    substitutes = Substitute.objects.filter(teacher=subteacher, verified=False)
+    for sub in substitutes:
+        # Iterating through the lessons reported to retrieve teachers available at that time
+        for i in range(len(lessons)):
+            try:
+                message = messages[i]['message']
+            except KeyError:
+                continue
+            lesson = lessons[i][1]
+            if "Period 1" == lesson:
+                teachers = list(sub.period_one.all())
+            elif "Period 2" == lesson:
+                teachers = list(sub.period_two.all())
+            elif "Period 3" == lesson:
+                teachers = list(sub.period_three.all())
+            elif "Period 4" == lesson:
+                teachers = list(sub.period_four.all())
+            elif "Period 5" == lesson:
+                teachers = list(sub.period_five.all())
+            elif "Period 6" == lesson:
+                teachers = list(sub.period_six.all())
+            elif lesson == "Recess":
+                teachers = list(sub.morning_recess.all())
+            elif lesson == "Lunch 1":
+                teachers = list(sub.lunch_one.all())
+            elif lesson == "Lunch 2":
+                teachers = list(sub.lunch_two.all())
+            elif lesson == "Lunch 3":
+                teachers = list(sub.lunch_three.all())
 
+            # Finding optimum substitute teacher
+            if not len(teachers) == 1:
+                min_count = 99999
+                min = None
+                mins = []
+                for teacher in teachers:
+                    if min_count > teacher.count:
+                        min_count = teacher.count
+                        min = teacher
+                    elif min_count == teacher.count:
+                        if not mins:
+                            mins.append(min)
+                        mins.append(teacher)
+            else:
+                min = teachers[0]
+
+            sublesson = Lesson.objects.get(
+                teacher=request.user, day=day, period=lesson)
+            subteacher = User.objects.get(email="rkawamura0483@gmail.com")
+
+            send_mail(
+                # Title
+                'Substitute Request',
+
+                # Body
+                'Teacher: ' + request.user.first_name + " " + request.user.last_name
+                + "\nDay: " +
+                request.session.get("day")+"\nPeriod: "+lesson+"\nRoom: "
+                + sublesson.room + "\nMessage: " + message +
+                "\n\nIf you are available, please click this url to confirm. "
+                + "saintmaur.pythonanywhere.com/confirm/" +
+                str(subteacher.id)
+                + "\nIf you are unavailable, please click this url." +
+                "saintmaur.pythonanywhere.com/deny/" + str(subteacher.id),
+
+                # Sender
+                'rkawamura0483@gmail.com',
+
+                # Recipient
+                [subteacher.email],
+                fail_silently=False,
+            )
+
+            sublesson = Lesson.objects.get(
+                teacher=request.user, day=day, period=lesson)
+            days = request.session.get("day").split(" ")
+            months = {"January": 1, "February": 2, "March": 3, "April": 4, "May": 5, "June": 6,
+                      "July": 7, "August": 8, "September": 9, "October": 10, "November": 11, "December": 12}
+            date = datetime.date(
+                int(days[2]), months[days[1][:-1]], int(days[0]))
+            Substitute.objects.create(
+                lesson=sublesson, teacher=min, date=date, verified=False)
     return render(request, "substitute/confirm.html")

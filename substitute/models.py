@@ -3,8 +3,11 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from multiselectfield import MultiSelectField
 
+# Class for managing users
+
 
 class UserManager(BaseUserManager):
+    # creating normal user
     def create_user(self, email, first_name, middle_name, last_name, role, subject, password=None):
         if not email:
             raise ValueError('Users must have an email address')
@@ -23,6 +26,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+    # creating admin user
     def create_superuser(self, email, first_name, middle_name, last_name, role, subject, password):
         user = self.create_user(
             email=email,
@@ -37,6 +41,8 @@ class UserManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user
+
+# Stores user information
 
 
 class User(AbstractBaseUser):
@@ -93,6 +99,8 @@ class User(AbstractBaseUser):
     def is_staff(self):
         return self.is_admin
 
+# Stores lesson information
+
 
 class Lesson(models.Model):
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -106,6 +114,8 @@ class Lesson(models.Model):
 
     def __str__(self):
         return self.name
+
+# Stores teachers available for substitution for each time slots
 
 
 class SubstituteSchedule(models.Model):
@@ -134,11 +144,15 @@ class SubstituteSchedule(models.Model):
     def __str__(self):
         return self.day
 
+# Holidays present in the academic calendar
+
 
 class Holiday(models.Model):
     start = models.DateField()
     end = models.DateField(null=True)
     type = models.CharField(max_length=200, null=True)
+
+# Substitute lesson information
 
 
 class Substitute(models.Model):

@@ -3,6 +3,8 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField, AuthenticationF
 from .models import User
 from django.forms import formset_factory
 
+# Form to create user
+
 
 class UserCreationForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
@@ -31,6 +33,8 @@ class UserCreationForm(forms.ModelForm):
             user.save()
         return user
 
+# Form to edit user information
+
 
 class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField()
@@ -44,6 +48,7 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
+# Form to receive the day the teacher will be absent for
 class AbsenceDayForm(forms.Form):
     day = forms.DateField()
 
@@ -56,6 +61,8 @@ class AbsenceDayForm(forms.Form):
             self.fields["day"].widget = forms.SelectDateWidget(
                 years=range(2000+year[0], 2000+year[1] + 1))
 
+# Form to receive which period the teacher will miss
+
 
 class AbsenceForm(forms.Form):
     period = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple)
@@ -64,13 +71,18 @@ class AbsenceForm(forms.Form):
         self.base_fields["period"].choices = periods
         super().__init__(*args, **kwargs)
 
+# Form to receive message to send to substitute teacher
+
 
 class MessageForm(forms.Form):
     message = forms.CharField(required=False,
-        widget=forms.widgets.Textarea(attrs={'rows': 10, 'cols': 60}))
+                              widget=forms.widgets.Textarea(attrs={'rows': 10, 'cols': 60}))
 
 
+# Creating formset to use multiple of these forms
 MessageFormSet = formset_factory(MessageForm, extra=10)
+
+# Form to receive email and password for login
 
 
 class LoginForm(forms.Form):

@@ -19,8 +19,10 @@
 					{% csrf_token %}
 					<h3 class="title is-3">Choose Periods For {{day}}</h3>
           <hr>
+					<!--Checkbox-->
 					<h5 class="title is-5">Select the periods that you will miss:</h5>
 					<div class="control">
+						<!--Looping through all the lessons that the teacher has on the day and rendering respective checkbox-->
 						{% for checkbox in form.period %}
 							<span class="period" id="{{forloop.counter}}">
 								{{ checkbox.tag }}
@@ -30,13 +32,16 @@
 						{% endfor %}
 					</div>
 					<hr>
+
+					<!--Messagebox-->
 					<h5 class="title is-5">Add any notes or messages you want to send to the substitute teacher:</h5>
 					{{ formset.management_form }}
+					<!--Rendering messagebox for each corresponding checkbox-->
 					{% for field in formset %}
-					<div class="is-hidden message" id="{{forloop.counter}}">
-						<label class="name" id="{{forloop.counter}}">Message for: {{ lesson_list|return_item:forloop.counter }}</label>
-						{{ field.message|add_class:"input"}}
-					</div>
+						<div class="is-hidden message" id="{{forloop.counter}}">
+							<label class="name" id="{{forloop.counter}}">Message for: {{ lesson_list|return_item:forloop.counter }}</label>
+							{{ field.message|add_class:"input"}}
+						</div>
 					{% endfor %}
 
 					<div class="field">
@@ -46,7 +51,7 @@
 							</button>
 						</p>
 					</div>
-          {% if messages %}
+          			{% if messages %}
 						{% for message in messages %}
 							<article class="message is-danger">
 								<div class="message-body">
