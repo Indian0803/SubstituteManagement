@@ -54,7 +54,7 @@ def logoutUser(request):
 # Renders home page for teachers
 def teacher_home(request):
     # Passing lesson information
-    day = datetime.datetime.now()
+    day = datetime.date.today()
     start = Holiday.objects.get(type="Calendar").start
     dt1 = day - start
     end = Holiday.objects.get(type="Calendar").end
